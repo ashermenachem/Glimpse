@@ -30,7 +30,19 @@ trap 'exit 130' INT
 trap 'exit 143' TERM
 
 say ''
-say "${blue}       ◌  ${bold}G L I M P S E${reset}"
+if [[ -t 1 && -z "${NO_COLOR:-}" && -z "${GLIMPSE_REDUCED_MOTION:-}" ]]; then
+  # A short blue gradient reveal, followed by a live spinner during the download.
+  printf '       %s◌  %s' "$blue" "$bold"
+  colors=(81 99 117 135 153 171 189)
+  letters=(G L I M P S E)
+  for i in 0 1 2 3 4 5 6; do
+    printf '\033[38;5;%sm%s ' "${colors[$i]}" "${letters[$i]}"
+    sleep 0.055
+  done
+  printf '%s\n' "$reset"
+else
+  say "${blue}       ◌  ${bold}G L I M P S E${reset}"
+fi
 say "${soft}          Your GPA, at a glance.${reset}"
 say "${soft}          Created by Asher Menachem${reset}"
 say ''
@@ -43,7 +55,7 @@ TEMP_DIR="$(mktemp -d "${TMPDIR:-/tmp}/glimpse-gpa.XXXXXXXX")" || fail 'Could no
 printf '  %s○%s  Getting Glimpse' "$blue" "$reset"
 curl --fail --silent --show-error --location --connect-timeout 15 --max-time 120 "$ARCHIVE" --output "$TEMP_DIR/glimpse.tar.gz" &
 download_pid=$!
-if [[ -t 1 && -z "${NO_COLOR:-}" ]]; then
+if [[ -t 1 && -z "${NO_COLOR:-}" && -z "${GLIMPSE_REDUCED_MOTION:-}" ]]; then
   frames=('◐' '◓' '◑' '◒'); frame=0
   while kill -0 "$download_pid" 2>/dev/null; do
     printf '\r  %s%s%s  Getting Glimpse' "$blue" "${frames[$frame]}" "$reset"
