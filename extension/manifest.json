@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
-  "name": "Glimpse GPA",
-  "version": "0.4.1",
+  "name": "Glimpse",
+  "version": "0.5.0",
   "description": "Your GPA at a glance inside MyMilken. Created by Asher Menachem.",
   "content_scripts": [
     {
@@ -10,6 +10,7 @@
       ],
       "js": [
         "core.js",
+        "personalize.js",
         "widget.js"
       ],
       "run_at": "document_idle"
@@ -33,7 +34,7 @@
     "128": "icons/icon128.png"
   },
   "action": {
-    "default_title": "Glimpse GPA",
+    "default_title": "Glimpse",
     "default_icon": {
       "16": "icons/icon16.png",
       "32": "icons/icon32.png",

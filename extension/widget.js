@@ -19,6 +19,7 @@
   let localTimer=null,frameTimer=null,pollTimer=null,refreshTimer=null,ageTimer=null,disposed=false,state='waiting';
   let sourceDoc=null,cacheRequestedFor='';
   const reduced=matchMedia('(prefers-reduced-motion: reduce)');
+  const personal=globalThis.GlimpsePersonalize?.mount({host,root,dock,setOpen,demo});
   const progress=()=>location.hash.split('?')[0]==='#studentmyday/progress';
   const identity=doc=>{
     const nav=doc.querySelector('#account-nav');if(!nav)return '';
@@ -28,7 +29,7 @@
     const title=nav.querySelector('.title')||nav;
     return (title.innerText||title.textContent||'').replace(/\s+/g,' ').trim();
   };
-  function setOpen(value){open=value;dock.classList.toggle('open',open);$('.toggle').setAttribute('aria-expanded',String(open));$('.toggle').setAttribute('aria-label',open?'Hide GPA details':'Show GPA details');$('.body').inert=!open;if(!open){$('.explanation').hidden=true;$('.about').setAttribute('aria-expanded','false');}}
+  function setOpen(value){open=value;dock.classList.toggle('open',open);$('.toggle').setAttribute('aria-expanded',String(open));$('.toggle').setAttribute('aria-label',open?'Hide GPA details':'Show GPA details');$('.body').inert=!open;if(!open){personal?.close();$('.explanation').hidden=true;$('.about').setAttribute('aria-expanded','false');}}
   $('.toggle').addEventListener('click',()=>setOpen(!open));
   $('.about').addEventListener('click',()=>{const show=$('.explanation').hidden;$('.explanation').hidden=!show;$('.about').setAttribute('aria-expanded',String(show));});
   root.querySelectorAll('[data-mode]').forEach(button=>button.addEventListener('click',()=>{mode=button.dataset.mode;$('.segment').classList.toggle('weighted',mode==='weighted');root.querySelectorAll('[data-mode]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.mode===mode)));paintNumber();}));
@@ -39,7 +40,7 @@
     if(value===null||reduced.matches||startValue===value){write(value);return;}
     const tick=now=>{const t=Math.min(1,(now-start)/650);write(startValue+(value-startValue)*(1-Math.pow(1-t,4)));if(t<1)animation=requestAnimationFrame(tick);};animation=requestAnimationFrame(tick);
   }
-  function paintNumber(){const value=['ready','stale'].includes(state)?result[mode]:null;number(value);$('.fill').style.strokeDashoffset=String(88*(1-Math.min(1,(value??0)/(mode==='weighted'?5:4))));$('.denominator').textContent=mode==='weighted'?'weighted':'/ 4.0';$('.toggle').title=value===null?'GPA unavailable':`${mode==='weighted'?'Weighted':'Unweighted'} GPA estimate: ${value.toFixed(2)}`;}
+  function paintNumber(){personal?.update(['ready','stale'].includes(state)?result:{});const value=['ready','stale'].includes(state)?result[mode]:null;number(value);$('.fill').style.strokeDashoffset=String(88*(1-Math.min(1,(value??0)/(mode==='weighted'?5:4))));$('.denominator').textContent=mode==='weighted'?'weighted':'/ 4.0';$('.toggle').title=value===null?'GPA unavailable':`${mode==='weighted'?'Weighted':'Unweighted'} GPA estimate: ${value.toFixed(2)}`;}
   function freshness(){if(state==='ready'&&Date.now()-lastRead>MAX_AGE_MS)setState('stale');else if(state==='ready')$('.status').textContent=`${result.count} courses · ${Date.now()-lastRead<60000?'Just updated':'Updated '+Math.floor((Date.now()-lastRead)/60000)+'m ago'}`;}
   function setState(next){state=next;dock.dataset.state=next;$('.status').textContent=({waiting:'Reading Progress',unavailable:'Progress unavailable',stale:'Waiting to refresh',ready:''})[next];paintNumber();paintCourses();if(next==='ready')freshness();}
   function paintCourses(){const list=$('.course-list');list.replaceChildren();
@@ -47,7 +48,7 @@
     courses.forEach((c,i)=>{const row=document.createElement('div');row.className='course';row.style.setProperty('--i',String(Math.min(i,5)));const name=document.createElement('span');name.className='course-name';name.textContent=c.name.replace(/\s*-\s*\d+\s*(\([A-H]\)\s*)*$/,'').replace(/\s*\([A-H]\)\s*$/,'');name.title=c.name;const g=document.createElement('span');g.className='course-grade';g.textContent=c.grade?.raw||'—';row.append(name,g);list.append(row);});
   }
   function clearFrame(){clearTimeout(sourceTimeout);clearTimeout(frameTimer);clearTimeout(pollTimer);sourceObserver?.disconnect();sourceObserver=null;sourceDoc=null;sourceFrame?.remove();sourceFrame=null;}
-  function reset(){clearFrame();cacheRequestedFor='';sync.lastLocalSignature='';courses=[];result=api.calculate([]);signature='';lastRead=0;lastServerRead=0;current=null;setOpen(false);setState('waiting');}
+  function reset(){personal?.owner('');clearFrame();cacheRequestedFor='';sync.lastLocalSignature='';courses=[];result=api.calculate([]);signature='';lastRead=0;lastServerRead=0;current=null;setOpen(false);setState('waiting');}
   function accept(doc,remote=false){const next=api.readCourses(doc);if(!next.length||(remote&&!api.calculate(next).count))return false;
     const owner=identity(doc);if(!demo&&(!owner||(account&&owner!==account)))return false;
     if(!account)account=owner;
@@ -79,7 +80,7 @@
     const owner=identity(document);
     if(loginPage()){if(account&&!demo&&globalThis.chrome?.runtime?.sendMessage)chrome.runtime.sendMessage({type:'glimpse:clear'}).catch(()=>{});host.remove();account='';reset();return;}
     if(!authenticated()){refresh();return;}
-    if(account&&owner&&account!==owner)reset();account=owner||account;
+    if(account&&owner&&account!==owner)reset();account=owner||account;personal?.owner(demo?'preview':account);
     if(!host.isConnected)document.body.append(host);
     if(owner&&!lastRead)loadCache(owner);
     if(progress()&&document.querySelector('#coursesContainer')){
@@ -118,7 +119,7 @@
   const focus=()=>{sync();if(Date.now()-lastServerRead>30000)refresh();};
   document.addEventListener('change',schedule);window.addEventListener('hashchange',schedule);window.addEventListener('focus',focus);document.addEventListener('visibilitychange',focus);
   refreshTimer=setInterval(refresh,REFRESH_MS);ageTimer=setInterval(freshness,15000);
-  function dispose(){disposed=true;clearFrame();observer.disconnect();clearInterval(refreshTimer);clearInterval(ageTimer);clearTimeout(localTimer);cancelAnimationFrame(animation);document.removeEventListener('change',schedule);document.removeEventListener('pointerdown',outside);document.removeEventListener('keydown',escape);window.removeEventListener('hashchange',schedule);window.removeEventListener('focus',focus);document.removeEventListener('visibilitychange',focus);host.remove();}
+  function dispose(){disposed=true;personal?.dispose();clearFrame();observer.disconnect();clearInterval(refreshTimer);clearInterval(ageTimer);clearTimeout(localTimer);cancelAnimationFrame(animation);document.removeEventListener('change',schedule);document.removeEventListener('pointerdown',outside);document.removeEventListener('keydown',escape);window.removeEventListener('hashchange',schedule);window.removeEventListener('focus',focus);document.removeEventListener('visibilitychange',focus);host.remove();}
   window.addEventListener('pagehide',()=>{if(!disposed)clearFrame();});
   // Scoped to the extension's isolated world; allows a development preview to clean up.
   globalThis.MilkenGPAWidget={dispose};sync();

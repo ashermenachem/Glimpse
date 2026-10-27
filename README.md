@@ -1,6 +1,6 @@
 <div align="center">
   <img src="assets/icon.png" width="94" alt="Glimpse GPA icon" />
-  <h1>Glimpse GPA</h1>
+  <h1>Glimpse</h1>
   <p><strong>Your GPA, at a glance.</strong><br />A quieter way to see your progress on MyMilken.</p>
   <p>
     <a href="#-install-in-about-a-minute">Install</a> ·
@@ -40,7 +40,10 @@ A tiny, animated widget that lives in the corner of MyMilken. Glimpse reads the 
 - **A closer look, only when you want it.** Click for your course grades and weighted or unweighted estimates.
 - **Always in motion.** Gentle transitions and a progress ring, with reduced-motion support.
 - **Follows you around.** Carries your latest grades between MyMilken pages and attempts to refresh in the background.
-- **Designed for you.** Light and dark appearance, no extra accounts, no subscription.
+- **Make it yours.** Light, Dark, System, and translucent Glass themes, remembered on this device.
+- **Anywhere you like.** Drag the header, or focus it and press Alt + arrow keys. Reset its position in Customize.
+- **A little perspective.** Choose your grade for a sourced reference comparison. Tap the comparison for its data and limitations.
+- **Meet the creator.** Asher’s socials are one small button away.
 
 ## 🚀 Install in about a minute
 
@@ -48,19 +51,31 @@ A tiny, animated widget that lives in the corner of MyMilken. Glimpse reads the 
 
 > **A quick heads-up:** the command below prepares Glimpse and opens Chrome for you. Because Glimpse isn't in the Chrome Web Store, Chrome requires three final clicks to load it. The command does not install it silently or change Chrome security settings.
 
-### 1. Open Terminal
+### Option A · Download the files (no Terminal)
+
+**[Download Glimpse ZIP ↓](https://github.com/ashermenachem/Glimpse/releases/latest/download/Glimpse.zip)**
+
+1. Download the ZIP and open it to extract the **Glimpse** folder in Downloads. On Windows, right-click the ZIP and choose **Extract All**.
+2. In Chrome, type `chrome://extensions` in the address bar and turn on **Developer mode**.
+3. Click **Load unpacked**, select **Glimpse → extension**, and open MyMilken. Choose your grade when Glimpse first opens.
+
+Keep the extracted folder: Chrome reads the extension from there. To update, replace its extension files with the latest download, click **Reload** on the Glimpse card in Chrome, and refresh MyMilken.
+
+### Option B · Guided Terminal setup (Mac)
+
+#### 1. Open Terminal
 
 Press **⌘ Command + Space**, type **Terminal**, and press **Return**. A window with text will appear.
 
-### 2. Copy, paste, and press Return
+#### 2. Copy, paste, and press Return
 
 ```bash
-curl -fsSL https://github.com/ashermenachem/glimpse-gpa/raw/refs/heads/main/install.sh | bash
+curl -fsSL https://github.com/ashermenachem/Glimpse/raw/refs/heads/main/install.sh | bash
 ```
 
 The setup shows its progress, saves Glimpse in **Downloads → Glimpse GPA → extension**, and opens a Finder window and Chrome's Extensions page. Keep that folder in Downloads: Chrome needs its files to run the extension. You can [read the installer](install.sh) before running it.
 
-### 3. Finish in Chrome
+#### 3. Finish in Chrome
 
 1. In the top-right corner of the Extensions page, turn on **Developer mode**.
 2. Click **Load unpacked**.
@@ -75,7 +90,7 @@ That's it. Go to **MyMilken → My Day → Progress** and your GPA widget should
 - **Chrome didn't open:** Open Chrome and type `chrome://extensions` in the address bar. The Terminal window shows the folder path.
 - **I see a dash:** Open MyMilken's **Progress** page and wait for the course cards to load. The widget needs available grades to calculate a GPA.
 - **I already have Glimpse:** Running the command again updates files that this installer previously created. Reload Glimpse on `chrome://extensions`, then refresh MyMilken. If you installed an earlier version in a different folder, remove that older Glimpse entry from Chrome before loading the Downloads copy, so you do not get duplicate widgets.
-- **I'm on Windows or Linux:** Download the [repository ZIP](https://github.com/ashermenachem/glimpse-gpa/archive/refs/heads/main.zip), extract it, then follow the three Chrome steps above and select the extracted `extension` folder. The one-line helper currently supports macOS only.
+- **I'm on Windows or Linux:** Download the [repository ZIP](https://github.com/ashermenachem/Glimpse/archive/refs/heads/main.zip), extract it, then follow the three Chrome steps above and select the extracted `extension` folder. The one-line helper currently supports macOS only.
 - **My school manages my computer:** Its Chrome settings may prevent unpacked extensions. Ask your administrator for help.
 
 </details>
@@ -90,17 +105,32 @@ The small **Estimate** button in the widget explains the assumptions. The defaul
 
 **This is an unofficial current-term estimate, not your transcript GPA.** Milken's official GPA, credit, and course-inclusion rules have not been verified. Glimpse isn't affiliated with or endorsed by Milken.
 
+## 📊 Reference comparisons
+
+Glimpse shows above / below / met against **historical reference averages**, not a Milken rank or a current national average.
+
+| Grade | Weighted cumulative reference GPA |
+| --- | --- |
+| 9 | 3.50 |
+| 10 | 3.60 |
+| 11 | 3.50 |
+| 12 | 3.50 |
+
+Source: [Christian Academy in Japan, 2013–14](https://caj.ac.jp/annualreport/filingcabinet/HSGPA.pdf). Glimpse compares its weighted current-term estimate with these published cumulative averages. Course weighting, school and year differ, so use this only as context. “Met” means the difference rounds to zero at two decimals. Grades 6–8 show reference unavailable.
+
+The **ACT percentile band** is a separate comparison using the unweighted estimate and the GPA groups in [ACT’s January 2024 Technical Manual, Table 7.3, 2015–16 data](https://www.education.ky.gov/AA/Reports/Documents/2024_ACT_Technical_Manual.pdf#page=118). Bounds sum the reported GPA groups below and including the user’s group, divided by the sum of the five GPA-group counts (1,709,659). Students without reported GPA are excluded. Bounds round outward to whole percentages. This is a broad historical ACT reference, **not grade-specific, exact, national, or Milken percentile rank**. No normal-distribution assumptions or invented class data are used.
+
 ## 🔒 Privacy first
 
 Glimpse has **no backend, ads, analytics, tracking, or account registration**. It does not send grades to the creator or a third party. The extension reads MyMilken in your signed-in browser, and the background Progress page makes the school's normal requests.
 
-To keep the widget available across separate MyMilken pages, it stores the latest course grades and an account identifier in **Chrome's extension session memory**. The cache is limited to the matching account, is not reused after 24 hours, and is cleared when Chrome restarts or the extension is reloaded, disabled, or removed. It isn't synced to other devices. You can inspect exactly what Glimpse does in [the source code](extension/) and read the full [Privacy Policy](PRIVACY.md).
+To keep the widget available across separate MyMilken pages, it stores the latest course grades and an account identifier in **Chrome's extension session memory**. The cache is limited to the matching account, is not reused after 24 hours, and is cleared when Chrome restarts or the extension is reloaded, disabled, or removed. It isn't synced to other devices. Your selected grade (per MyMilken account), theme and widget position are saved locally across browser restarts; GPA records remain session-only. You can inspect exactly what Glimpse does in [the source code](extension/) and read the full [Privacy Policy](PRIVACY.md).
 
 ## 🧰 For developers
 
 ```bash
-git clone https://github.com/ashermenachem/glimpse-gpa.git
-cd glimpse-gpa
+git clone https://github.com/ashermenachem/Glimpse.git
+cd Glimpse
 npm ci
 npm test
 npm run preview

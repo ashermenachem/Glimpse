@@ -1,0 +1,54 @@
+/* Glimpse preferences and reference comparisons. Created by Asher Menachem. */
+(() => {
+  const averages = {9:3.5,10:3.6,11:3.5,12:3.5};
+  const bins = [[0,75255],[2,154002],[2.5,274467],[3,479292],[3.5,726643]];
+  function compare(grade, weighted, unweighted) {
+    if (!averages[grade] || !Number.isFinite(weighted) || !Number.isFinite(unweighted)) return null;
+    const average=averages[grade], delta=Math.round((weighted-average)*100)/100;
+    const total=bins.reduce((n,b)=>n+b[1],0);
+    let below=0, count=0;
+    for(let i=0;i<bins.length;i++){if(unweighted>=bins[i][0]){below=bins.slice(0,i).reduce((n,b)=>n+b[1],0);count=bins[i][1];}}
+    return {average,delta,label:delta===0?'Met reference average':delta>0?'Above reference average':'Below reference average',low:Math.floor(100*below/total),high:Math.ceil(100*(below+count)/total)};
+  }
+  globalThis.GlimpsePersonalize = {compare, mount({host,root,dock,setOpen,demo}) {
+    const $=s=>root.querySelector(s);
+    let owner='', grade=null, prefs={theme:'system',position:null}, snapshot={}, disposed=false, drag=null, suppressClick=false;
+    const media=matchMedia('(prefers-color-scheme: dark)');
+    const storage=globalThis.chrome?.storage?.local;
+    const get=async key=>{try{return storage?(await storage.get(key))[key]:demo?JSON.parse(localStorage.getItem(key)||'null'):null;}catch{return null;}};
+    const put=async(key,value)=>{try{if(storage)await storage.set({[key]:value});else if(demo)localStorage.setItem(key,JSON.stringify(value));}catch{$('.save-note').textContent='Could not save preferences. Try reloading Glimpse.';}};
+    const comparison=document.createElement('button');comparison.type='button';comparison.className='comparison';comparison.innerHTML='<span class="compare-title">Make Glimpse yours</span><span class="compare-sub">Choose your grade →</span><span class="compare-track"><i></i></span>';
+    $('.segment').after(comparison);
+    const footer=document.createElement('div');footer.className='widget-footer';footer.innerHTML='<button type="button" class="settings-button">Customize</button><button type="button" class="creator-button">About the creator ↗</button>';
+    $('.body').append(footer);
+    const panel=document.createElement('div');panel.className='personal-panel';panel.hidden=true;
+    panel.innerHTML=`<div class="panel-heading"><button type="button" class="panel-back" aria-label="Back to GPA">‹</button><strong class="panel-title">Make it yours</strong></div><div class="panel-content"><div class="settings-content"><p class="welcome">A little more you.</p><label for="glimpse-grade">Your grade</label><select id="glimpse-grade"><option value="">Choose your grade</option>${[6,7,8,9,10,11,12].map(n=>`<option value="${n}">Grade ${n}</option>`).join('')}</select><p class="fine">Saved on this device. Change it each school year.</p><label>Appearance</label><div class="themes">${['light','dark','system','glass'].map(t=>`<button type="button" data-theme-choice="${t}" aria-pressed="false"><span class="swatch ${t}"></span>${t[0].toUpperCase()+t.slice(1)}</button>`).join('')}</div><button class="reset-position" type="button">Reset widget position</button><p class="fine">Drag the header anywhere. Or focus it and use Alt + arrow keys.</p><button type="button" class="done-button">Done</button><p class="save-note" role="status"></p></div><div class="creator-content" hidden><div class="creator-monogram">am.</div><p class="creator-kicker">CREATED BY</p><h2>Asher Menachem</h2><p class="fine">A quieter way to see your progress.<br>Free to use. Open to improve.</p><div class="socials"></div></div><div class="reference-content" hidden><p class="welcome">A little perspective.</p><p>Grade-level averages: Christian Academy in Japan, 2013–14. Grades 9 / 10 / 11 / 12: 3.5 / 3.6 / 3.5 / 3.5, weighted cumulative GPA.</p><p>We compare your weighted current-term estimate with that reference. Different schools, course weights and time periods make this a rough comparison, not a Milken rank or national average.</p><a href="https://caj.ac.jp/annualreport/filingcabinet/HSGPA.pdf" target="_blank" rel="noopener noreferrer">Read grade-average source ↗</a><p>Percentile bands use your unweighted estimate and ACT’s 2015–16 GPA groups (2024 Technical Manual, Table 7.3). These are ACT students across high school, not students in your selected grade. Only students with reported GPA are counted.</p><p>A range is shown because grouped data cannot give an exact percentile. No grades are uploaded. No reference is supplied for grades 6–8.</p><a href="https://www.education.ky.gov/AA/Reports/Documents/2024_ACT_Technical_Manual.pdf#page=118" target="_blank" rel="noopener noreferrer">Read percentile source ↗</a></div></div>`;
+    $('.body').append(panel);
+    const socials=[['Instagram','https://www.instagram.com/ashermenachem/?hl=en'],['X','https://x.com/ashermenachem'],['TikTok','https://www.tiktok.com/@ashermenachem'],['GitHub','https://github.com/ashermenachem'],['Snapchat','https://www.snapchat.com/@asher.menachem']];
+    for(const [name,url] of socials){const a=document.createElement('a');a.href=url;a.target='_blank';a.rel='noopener noreferrer';a.textContent=name+' ↗';$('.socials').append(a);}
+    function show(which){setOpen(true);panel.hidden=false;$('.panel-title').textContent=({settings:'Make it yours',creator:'Behind Glimpse',reference:'About comparisons'})[which];for(const name of ['settings','creator','reference'])$('.'+name+'-content').hidden=name!==which;for(const child of $('.body').children)if(child!==panel)child.inert=true;$('.body').scrollTop=0;panel.scrollTop=0;$('.panel-back').focus({preventScroll:true});}
+    function hide(){panel.hidden=true;for(const child of $('.body').children)child.inert=false;$('.body').scrollTop=0;$('.settings-button').focus({preventScroll:true});}
+    $('.panel-back').onclick=hide;$('.done-button').onclick=hide;$('.settings-button').onclick=()=>show('settings');$('.creator-button').onclick=()=>show('creator');comparison.onclick=()=>show(grade?'reference':'settings');
+    function theme(){host.dataset.theme=prefs.theme;host.dataset.dark=String(prefs.theme==='dark'||(['system','glass'].includes(prefs.theme)&&media.matches));root.querySelectorAll('[data-theme-choice]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.themeChoice===prefs.theme)));}
+    root.querySelectorAll('[data-theme-choice]').forEach(b=>b.onclick=()=>{prefs.theme=b.dataset.themeChoice;theme();put('glimpse:appearance',prefs);});media.addEventListener?.('change',theme);theme();
+    function render(){const c=compare(grade,snapshot.weighted,snapshot.unweighted);$('.compare-title').textContent=!grade?'Make Glimpse yours':c?c.label:'Comparison unavailable';$('.compare-sub').textContent=!grade?'Choose your grade →':c?`Grade ${grade} · CAJ 2013–14 · weighted`:`Grade ${grade} · ${grade<9?'No published reference loaded':'Waiting for GPA'}`;
+      let band=$('.percentile-band');if(!band){band=document.createElement('span');band.className='percentile-band';comparison.append(band);}band.textContent=c?`ACT reference · ${c.low}–${c.high} percentile band`:'Not a Milken class rank';$('.compare-track').hidden=!c;$('.compare-track i').style.width=c?Math.min(100,Math.max(0,snapshot.weighted/5*100))+'%':'0';comparison.title=c?`Your weighted estimate: ${snapshot.weighted.toFixed(2)}. Reference average: ${c.average.toFixed(2)}. Click for sources and limits.`:'Click for details';}
+    const gradeKey=id=>'glimpse:grade:'+id;
+    $('#glimpse-grade').onchange=()=>{grade=Number($('#glimpse-grade').value)||null;if(owner)put(gradeKey(owner),grade);render();};
+    function dimensions(){return {w:dock.offsetWidth||168,h:dock.offsetHeight||66};}
+    function place(x,y){const {w,h}=dimensions();const next={x:Math.max(8,Math.min(x,innerWidth-w-8)),y:Math.max(8,Math.min(y,innerHeight-h-8))};host.style.setProperty('--glimpse-left',next.x+'px');host.style.setProperty('--glimpse-top',next.y+'px');host.style.setProperty('--glimpse-bottom','auto');return next;}
+    function clamp(){if(prefs.position){const r=host.getBoundingClientRect();place(r.left,r.top);}}
+    $('.reset-position').onclick=()=>{prefs.position=null;host.style.removeProperty('--glimpse-left');host.style.removeProperty('--glimpse-top');host.style.removeProperty('--glimpse-bottom');put('glimpse:appearance',prefs);};
+    const toggle=$('.toggle');toggle.style.touchAction='none';toggle.setAttribute('aria-description','Drag to move. Alt plus arrow keys also moves the widget.');
+    const down=e=>{if(e.button!==0)return;suppressClick=false;const r=host.getBoundingClientRect();drag={id:e.pointerId,x:e.clientX,y:e.clientY,left:r.left,top:r.top,moved:false};toggle.setPointerCapture?.(e.pointerId);};
+    const move=e=>{if(!drag||drag.id!==e.pointerId)return;const dx=e.clientX-drag.x,dy=e.clientY-drag.y;if(!drag.moved&&Math.hypot(dx,dy)<5)return;drag.moved=true;dock.classList.add('dragging');prefs.position=place(drag.left+dx,drag.top+dy);};
+    const up=()=>{if(drag?.moved){suppressClick=true;put('glimpse:appearance',prefs);}drag=null;dock.classList.remove('dragging');};
+    const click=e=>{if(suppressClick){e.preventDefault();e.stopImmediatePropagation();suppressClick=false;}};
+    const key=e=>{if(!e.altKey||!['ArrowLeft','ArrowRight','ArrowUp','ArrowDown'].includes(e.key))return;e.preventDefault();const r=host.getBoundingClientRect();prefs.position=place(r.left+(e.key==='ArrowLeft'?-16:e.key==='ArrowRight'?16:0),r.top+(e.key==='ArrowUp'?-16:e.key==='ArrowDown'?16:0));put('glimpse:appearance',prefs);};
+    toggle.addEventListener('pointerdown',down);toggle.addEventListener('pointermove',move);toggle.addEventListener('pointerup',up);toggle.addEventListener('pointercancel',up);toggle.addEventListener('lostpointercapture',up);toggle.addEventListener('click',click,true);toggle.addEventListener('keydown',key);window.addEventListener('resize',clamp);
+    const resize=typeof ResizeObserver!=='undefined'?new ResizeObserver(clamp):null;resize?.observe(dock);
+    get('glimpse:appearance').then(saved=>{if(disposed)return;if(saved){if(['light','dark','system','glass'].includes(saved.theme))prefs.theme=saved.theme;if(Number.isFinite(saved.position?.x)&&Number.isFinite(saved.position?.y)){prefs.position=saved.position;place(saved.position.x,saved.position.y);}}theme();});
+    render();
+    return {update(next){snapshot=next;render();},async owner(id){if(id===owner)return;owner=id;grade=null;$('#glimpse-grade').value='';render();if(!id)return;const saved=await get(gradeKey(id));if(disposed||id!==owner)return;if(Number.isInteger(saved)&&saved>=6&&saved<=12){grade=saved;$('#glimpse-grade').value=String(saved);render();}else show('settings');},close(){panel.hidden=true;for(const child of $('.body').children)child.inert=false;},dispose(){disposed=true;resize?.disconnect();media.removeEventListener?.('change',theme);window.removeEventListener('resize',clamp);}};
+  }};
+})();

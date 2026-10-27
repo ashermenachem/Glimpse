@@ -2,7 +2,7 @@
 # Glimpse GPA installer. Created by Asher Menachem. MIT licensed.
 set -Eeuo pipefail
 
-REPO='https://github.com/ashermenachem/glimpse-gpa'
+REPO='https://github.com/ashermenachem/Glimpse'
 ARCHIVE="$REPO/archive/refs/heads/main.tar.gz"
 INSTALL_BASE="${GLIMPSE_INSTALL_ROOT:-$HOME/Downloads/Glimpse GPA}"
 INSTALL_DIR="$INSTALL_BASE/extension"
@@ -65,7 +65,7 @@ fi
 if ! wait "$download_pid"; then printf '\n'; fail 'Download failed. Check your connection and try again.'; fi
 printf '\r  %s✓%s  Downloaded Glimpse       \n' "$blue" "$reset"
 tar -xzf "$TEMP_DIR/glimpse.tar.gz" -C "$TEMP_DIR" || fail 'Could not unpack the download.'
-SOURCE="$TEMP_DIR/glimpse-gpa-main/extension"
+SOURCE="$TEMP_DIR/Glimpse-main/extension"
 [[ -f "$SOURCE/manifest.json" && -f "$SOURCE/widget.js" && -f "$SOURCE/background.js" ]] || fail 'The download is missing extension files.'
 mkdir -p "$INSTALL_BASE" || fail 'Could not create the install folder.'
 STAGE="$INSTALL_BASE/.extension-new-$$"
