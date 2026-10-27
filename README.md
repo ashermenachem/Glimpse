@@ -58,7 +58,7 @@ Press **⌘ Command + Space**, type **Terminal**, and press **Return**. A window
 curl -fsSL https://raw.githubusercontent.com/ashermenachem/glimpse-gpa/main/install.sh | bash
 ```
 
-The setup shows its progress, downloads the extension, and opens a Finder window and Chrome's Extensions page. You can [read the installer](install.sh) before running it.
+The setup shows its progress, saves Glimpse in **Downloads → Glimpse GPA → extension**, and opens a Finder window and Chrome's Extensions page. Keep that folder in Downloads: Chrome needs its files to run the extension. You can [read the installer](install.sh) before running it.
 
 ### 3. Finish in Chrome
 
@@ -74,7 +74,7 @@ That's it. Go to **MyMilken → My Day → Progress** and your GPA widget should
 - **I don't see the extension:** Make sure you selected the folder named `extension`, which contains `manifest.json`, and reload MyMilken.
 - **Chrome didn't open:** Open Chrome and type `chrome://extensions` in the address bar. The Terminal window shows the folder path.
 - **I see a dash:** Open MyMilken's **Progress** page and wait for the course cards to load. The widget needs available grades to calculate a GPA.
-- **I already have Glimpse:** Running the command again updates files that this installer previously created. Reload Glimpse on `chrome://extensions`, then refresh MyMilken. If you installed it from another folder, update that copy instead of loading a duplicate.
+- **I already have Glimpse:** Running the command again updates files that this installer previously created. Reload Glimpse on `chrome://extensions`, then refresh MyMilken. If you installed an earlier version in a different folder, remove that older Glimpse entry from Chrome before loading the Downloads copy, so you do not get duplicate widgets.
 - **I'm on Windows or Linux:** Download the [repository ZIP](https://github.com/ashermenachem/glimpse-gpa/archive/refs/heads/main.zip), extract it, then follow the three Chrome steps above and select the extracted `extension` folder. The one-line helper currently supports macOS only.
 - **My school manages my computer:** Its Chrome settings may prevent unpacked extensions. Ask your administrator for help.
 

@@ -4,7 +4,7 @@ set -Eeuo pipefail
 
 REPO='https://github.com/ashermenachem/glimpse-gpa'
 ARCHIVE="$REPO/archive/refs/heads/main.tar.gz"
-INSTALL_BASE="${GLIMPSE_INSTALL_ROOT:-$HOME/Library/Application Support/Glimpse GPA}"
+INSTALL_BASE="${GLIMPSE_INSTALL_ROOT:-$HOME/Downloads/Glimpse GPA}"
 INSTALL_DIR="$INSTALL_BASE/extension"
 MARKER="$INSTALL_BASE/.installed-by-glimpse"
 TEMP_DIR=''
