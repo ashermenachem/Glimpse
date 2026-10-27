@@ -12,7 +12,7 @@ Glimpse does not ask for or collect your password, authentication codes, or paym
 
 ## Storage and sharing
 
-Glimpse processes grades locally in Chrome. It temporarily stores the latest course data and account identifier in Chrome's extension session storage. This session cache is available only to the extension, is not synced between devices, expires after 24 hours, and is cleared when Chrome restarts or the extension is reloaded, disabled, or removed. Glimpse does not send grades, the account identifier, or other student information to Asher Menachem or to a third-party server.
+Glimpse processes grades locally in Chrome. It temporarily stores the latest course data and account identifier in Chrome's extension session storage. This session cache is available only to the extension, is not synced between devices, is not reused after 24 hours, and is cleared when Chrome restarts or the extension is reloaded, disabled, or removed. Glimpse does not send grades, the account identifier, or other student information to Asher Menachem or to a third-party server.
 
 The extension may open MyMilken's Progress page in a background frame to refresh grades. That page communicates with MyMilken using your existing browser session and is governed by the school's policies. Glimpse's access is limited to `milkenschool.myschoolapp.com`.
 

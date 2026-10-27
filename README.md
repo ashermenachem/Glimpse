@@ -94,7 +94,7 @@ The small **Estimate** button in the widget explains the assumptions. The defaul
 
 Glimpse has **no backend, ads, analytics, tracking, or account registration**. It does not send grades to the creator or a third party. The extension reads MyMilken in your signed-in browser, and the background Progress page makes the school's normal requests.
 
-To keep the widget available across separate MyMilken pages, it stores the latest course grades and an account identifier in **Chrome's extension session memory**. The cache is limited to the matching account, expires after 24 hours, and is cleared when Chrome restarts or the extension is reloaded, disabled, or removed. It isn't synced to other devices. You can inspect exactly what Glimpse does in [the source code](extension/) and read the full [Privacy Policy](PRIVACY.md).
+To keep the widget available across separate MyMilken pages, it stores the latest course grades and an account identifier in **Chrome's extension session memory**. The cache is limited to the matching account, is not reused after 24 hours, and is cleared when Chrome restarts or the extension is reloaded, disabled, or removed. It isn't synced to other devices. You can inspect exactly what Glimpse does in [the source code](extension/) and read the full [Privacy Policy](PRIVACY.md).
 
 ## 🧰 For developers
 
