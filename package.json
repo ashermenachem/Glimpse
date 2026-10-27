@@ -1,0 +1,15 @@
+{
+  "name": "glimpse-gpa",
+  "version": "0.4.1",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node --test tests/*.test.js",
+    "preview": "node server.js"
+  },
+  "devDependencies": {
+    "jsdom": "^26.1.0"
+  },
+  "author": "Asher Menachem",
+  "license": "MIT"
+}
