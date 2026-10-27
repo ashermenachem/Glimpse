@@ -55,7 +55,7 @@ Press **⌘ Command + Space**, type **Terminal**, and press **Return**. A window
 ### 2. Copy, paste, and press Return
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/ashermenachem/glimpse-gpa/main/install.sh | bash
+curl -fsSL https://github.com/ashermenachem/glimpse-gpa/raw/refs/heads/main/install.sh | bash
 ```
 
 The setup shows its progress, saves Glimpse in **Downloads → Glimpse GPA → extension**, and opens a Finder window and Chrome's Extensions page. Keep that folder in Downloads: Chrome needs its files to run the extension. You can [read the installer](install.sh) before running it.
