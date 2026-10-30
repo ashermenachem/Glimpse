@@ -47,7 +47,26 @@ A tiny, animated widget that lives in the corner of MyMilken. Glimpse reads the 
 
 ## 🚀 Install in about a minute
 
-**You'll need:** a Mac, Google Chrome, and your MyMilken login. Glimpse is free.
+**Choose your browser:** [Chrome](#chrome) · [Safari on Mac (experimental)](#safari-on-mac-experimental)
+
+Glimpse is free. You'll need your MyMilken login.
+
+### Safari on Mac (experimental)
+
+**[Download Glimpse for Safari ZIP ↓](https://github.com/ashermenachem/Glimpse/releases/latest/download/Glimpse-Safari.zip)**
+
+A separate download for Safari's **Add Temporary Extension** feature on Mac. No Terminal or Xcode needed for this temporary setup.
+
+1. Download the Safari ZIP. If Safari extracts it automatically, keep the extracted folder.
+2. Open **Safari → Settings → Advanced** and enable **Show features for web developers**.
+3. In **Settings → Developer**, click **Add Temporary Extension…** and approve Safari's unsigned-extension prompt. Select the ZIP or its extracted folder (the one containing `manifest.json`).
+4. In **Settings → Extensions**, enable Glimpse and allow access to **milkenschool.myschoolapp.com**. Open **MyMilken → My Day → Progress**.
+
+**Temporary installation:** Safari removes it after 24 hours or when Safari quits. Repeat steps 3–4 to add it again. This is an experimental preview, not a signed Safari app or an iPhone/iPad download. If **Add Temporary Extension** is missing, this download cannot be installed directly in your Safari version. See the [Safari guide](docs/SAFARI.md) for updates and troubleshooting.
+
+### Chrome
+
+Use the Chrome ZIP on Mac, Windows, or Linux, or the guided Terminal setup on Mac.
 
 > **A quick heads-up:** the command below prepares Glimpse and opens Chrome for you. Because Glimpse isn't in the Chrome Web Store, Chrome requires three final clicks to load it. The command does not install it silently or change Chrome security settings.
 
@@ -124,7 +143,7 @@ The **ACT percentile band** is a separate comparison using the unweighted estima
 
 Glimpse has **no backend, ads, analytics, tracking, or account registration**. It does not send grades to the creator or a third party. The extension reads MyMilken in your signed-in browser, and the background Progress page makes the school's normal requests.
 
-To keep the widget available across separate MyMilken pages, it stores the latest course grades and an account identifier in **Chrome's extension session memory**. The cache is limited to the matching account, is not reused after 24 hours, and is cleared when Chrome restarts or the extension is reloaded, disabled, or removed. It isn't synced to other devices. Your selected grade (per MyMilken account), theme and widget position are saved locally across browser restarts; GPA records remain session-only. You can inspect exactly what Glimpse does in [the source code](extension/) and read the full [Privacy Policy](PRIVACY.md).
+To keep the widget available across separate MyMilken pages, it stores the latest course grades and an account identifier in **the browser's extension session memory**. The cache is limited to the matching account, is not reused after 24 hours, and is cleared when the browser restarts or the extension is reloaded, disabled, or removed. It isn't synced to other devices. Your selected grade (per MyMilken account), theme and widget position are saved locally across browser restarts; GPA records remain session-only. You can inspect exactly what Glimpse does in [the source code](extension/) and read the full [Privacy Policy](PRIVACY.md).
 
 ## 🧰 For developers
 
@@ -144,6 +163,16 @@ assets/         Brand artwork and fictional demo images
 tests/          Calculation, navigation, privacy, and installer tests
 install.sh      Guided macOS setup
 ```
+
+Build the two downloads separately:
+
+```bash
+python3 scripts/package.py /tmp/Glimpse.zip
+python3 scripts/package.py --browser safari /tmp/Glimpse-Safari.zip
+python3 -m unittest discover -s tests -p 'test_*.py'
+```
+
+Publishing a new GitHub release runs `.github/workflows/downloads.yml`, tests the tagged source, and attaches both ZIPs. Release tags must include the browser packaging scripts and Safari guide. The workflow can also be run manually against an existing compatible release tag.
 
 Contributions are welcome—see [CONTRIBUTING.md](CONTRIBUTING.md). Please don't include personal grades, credentials, screenshots, or school records in issues or pull requests.
 

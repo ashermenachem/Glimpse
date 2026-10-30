@@ -2,16 +2,25 @@
 """Build the public download without development files or student data."""
 from pathlib import Path
 from zipfile import ZipFile, ZIP_DEFLATED
-import sys
+import argparse
+
+parser = argparse.ArgumentParser(description=__doc__)
+parser.add_argument("output", nargs="?", type=Path)
+parser.add_argument("--browser", choices=["chrome", "safari"], default="chrome")
+args = parser.parse_args()
 root = Path(__file__).resolve().parent.parent
-output = Path(sys.argv[1]) if len(sys.argv) > 1 else root.parent / 'Glimpse.zip'
+output = args.output or root.parent / ('Glimpse-Safari.zip' if args.browser == 'safari' else 'Glimpse.zip')
+safari = args.browser == 'safari'
 with ZipFile(output, 'w', ZIP_DEFLATED) as archive:
     for path in sorted((root / 'extension').rglob('*')):
         if path.is_file() and not path.name.startswith('.'):
-            archive.write(path, Path('Glimpse') / path.relative_to(root))
+            archive.write(path, path.relative_to(root / 'extension') if safari else Path('Glimpse') / path.relative_to(root))
     for name in ['LICENSE', 'PRIVACY.md']:
-        archive.write(root / name, 'Glimpse/' + name)
-    archive.writestr('Glimpse/START HERE.txt', '''GLIMPSE — Created by Asher Menachem
+        archive.write(root / name, name if safari else 'Glimpse/' + name)
+    if safari:
+        archive.write(root / 'docs/SAFARI.md', 'START HERE.md')
+    else:
+        archive.writestr('Glimpse/START HERE.txt', '''GLIMPSE — Created by Asher Menachem
 
 1. Keep this Glimpse folder in Downloads.
 2. Open Google Chrome and type chrome://extensions in the address bar.

@@ -1,6 +1,6 @@
 # Glimpse GPA Privacy Policy
 
-Effective October 27, 2026
+Effective October 29, 2026
 
 Glimpse GPA is an unofficial browser extension created by Asher Menachem. It shows an estimated GPA using the grades available to the signed-in student on MyMilken.
 
@@ -12,15 +12,15 @@ Glimpse does not ask for or collect your password, authentication codes, or paym
 
 ## Storage and sharing
 
-Glimpse processes grades locally in Chrome. It temporarily stores the latest course data and account identifier in Chrome's extension session storage. This session cache is available only to the extension, is not synced between devices, is not reused after 24 hours, and is cleared when Chrome restarts or the extension is reloaded, disabled, or removed. Glimpse does not send grades, the account identifier, or other student information to Asher Menachem or to a third-party server.
+Glimpse processes grades locally in your browser. It temporarily stores the latest course data and account identifier in the browser's extension session storage. This session cache is available only to the extension, is not synced between devices, is not reused after 24 hours, and is cleared when the browser restarts or the extension is reloaded, disabled, or removed. Glimpse does not send grades, the account identifier, or other student information to Asher Menachem or to a third-party server.
 
 The extension may open MyMilken's Progress page in a background frame to refresh grades. That page communicates with MyMilken using your existing browser session and is governed by the school's policies. Glimpse's access is limited to `milkenschool.myschoolapp.com`.
 
-Your chosen grade is stored per MyMilken account in Chrome extension local storage. Theme and widget position are also stored locally and persist across browser restarts. They are not synced or transmitted. Public benchmark numbers are bundled with the extension. Opening a source or social link navigates to that external website, whose own privacy policy applies.
+Your chosen grade is stored per MyMilken account in browser extension local storage. Theme and widget position are also stored locally and persist across browser restarts. They are not synced or transmitted. Public benchmark numbers are bundled with the extension. Opening a source or social link navigates to that external website, whose own privacy policy applies.
 
 ## Your choices
 
-You can remove Glimpse at any time through `chrome://extensions`, which clears its extension session data and local preferences. You can also sign out of MyMilken. Glimpse is not affiliated with or endorsed by Milken Community School.
+You can remove Glimpse at any time through `chrome://extensions` in Chrome or Safari → Settings → Extensions, which clears its extension session data and local preferences. You can also sign out of MyMilken. Glimpse is not affiliated with or endorsed by Milken Community School.
 
 ## Contact
 

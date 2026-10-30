@@ -4,3 +4,6 @@ node_modules/
 .env.*
 coverage/
 *.log
+__pycache__/
+*.pyc
+/dist/
